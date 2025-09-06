@@ -1,0 +1,308 @@
+---
+title: "Daav Cup"
+author: "TD Sheep"
+date: "2024-12-07"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+library(kableExtra)
+```
+
+
+
+
+```{r}
+# @ daav run this chunk
+
+getCars <- function(data, match, bracket){
+  # find common cars for a given set of players
+  test <- data %>%
+    filter(Bracket == bracket) %>%
+    filter(Team %in% match) %>%
+    pivot_longer(cols = Ace:Spectre, 
+                 names_to = 'Car', 
+                 values_to = 'Rank') %>%
+    pivot_wider(id_cols = -c(Bracket,Team,Colour,League), 
+                names_from = Name, 
+                values_from = Rank) %>%
+    filter(apply(., 1, function(x) length(unique(x)) == 2),
+           .[[2]] != "NULL")
+}
+
+getMatchups <- function(data,teams,npools){
+  
+  # initialisations
+  cars <- list()
+  n <- c()
+  
+  for(i in 1:npools){
+    # find matches
+    tmp <- getCars(data,teams,i)
+    # assign to list
+    cars[[i]] = paste(tmp[[2]],tmp$Car)
+    # assign numbers to vector
+    n[i] = nrow(tmp)
+  }
+
+  # initialise blank df for cars
+  matches <- tibble(
+    Captains        = rep('',max(n)),
+    `Vice Captains` = rep('',max(n)),
+    `Pool 3`        = rep('',max(n)),
+    `Pool 4`        = rep('',max(n)),
+    `Pool 5`        = rep('',max(n)),
+    `Pool 6`        = rep('',max(n)),
+    `Pool 7`        = rep('',max(n)),
+    `Pool 8`        = rep('',max(n)),
+    `Pool 9`        = rep('',max(n)),
+    `Pool 10`       = rep('',max(n))
+  ) %>%
+    select(1:npools)
+  
+  for(i in 1:npools){
+    if(n[i] > 0){
+      matches[1:n[i],i] <- cars[[i]]
+    }
+  }
+  
+  return(matches)
+}
+
+
+getResults <- function(data, team, npools){
+  data %>%
+    select(Player = names(.[team*2-1]),
+           Points = names(.[team*2])) %>%
+    mutate(Team = rep(names(data[team*2-1]),npools), .before=1) %>%
+    return()
+}
+
+save(getCars,getMatchups,getResults,file='functions.RData')
+```
+
+```{r}
+# @ daav run this chunk (if you edit names they MUST match the input data for all csv files)
+
+# define teams
+teams <- tibble(
+  `Team Jango`  = c('Jango', 'Bean', 'Skanderberg', 'Strawberry', 'Speedkami', '2bskii', 'Swagzilla'),
+  `Team Jon`    = c('JonReremy', 'Yutaaah', 'Bubs', 'Nick CPA', 'D1ZZY', 'Nic', 'Safalada'),
+  `Team Tattoo`     = c('Tattoo', 'Fawn', 'Kenny', 'Fallen', 'Kux', 'Enkobo', 'Jackson'),
+  `Team Chungus`  = c('Chungus', 'Jhoni', 'Crxzy', 'Tazaky', 'FBR', 'Zuhayer', 'Partly_Sunny'),
+  `Team Mo` = c('Mo', 'Tristan', 'Farts', 'Ranger Robert', 'Fletch', 'Zaorn', 'bangstarserve'),
+  `Team Jane`   = c('Jane', 'Deke', 'Jrash', 'Luh', 'Jxn', 'snpnirav', 'Bobierto'),
+  `Team Kalaginho` = c('Kalaginho', 'KenDan', 'Steefee', 'Nah Id Drift', 'Colrr', 'Sly', 'Bebebalahahaha'),
+  `Team Zest`   = c('Zest', 'Kalipr', 'Samurai', 'Thiasma', 'Yogurt', 'Mr Wood', 'Paradox'),
+  `Team Daav`   = c('Daav', 'Zenith', 'DC Racer', 'Cassiopea', 'Velox', 'Sokpupt', 'Barebuha')
+)
+
+nteams = ncol(teams)
+npools = nrow(teams)
+```
+
+```{r}
+# @ daav run this chunk (you can edit the colours)
+
+# import sheet
+data <- read_csv('data/daavdata.csv') %>%
+  rename(Name = `What name do you go by in the discord?`,
+         League = `What is the Highest league you have reached?`) %>%
+  select(-c(1,3)) %>%
+  filter(Bracket != '') %>%
+  mutate(across(Ace:Spectre, 
+                ~ case_match(., 
+                             "Don't have/cannot upgrade" ~ "NULL",
+                             .default = .))) %>%
+  mutate(Team = case_match(Name, 
+                           teams$`Team Jango`     ~ 1,
+                           teams$`Team Jon`       ~ 2,
+                           teams$`Team Tattoo`    ~ 3,
+                           teams$`Team Chungus`   ~ 4,
+                           teams$`Team Mo`        ~ 5,
+                           teams$`Team Jane`      ~ 6,
+                           teams$`Team Kalaginho` ~ 7,
+                           teams$`Team Zest`      ~ 8,
+                           teams$`Team Daav`      ~ 9
+                           ),
+         Colour = case_match(Name, 
+                           teams$`Team Jango`     ~ 'lightgreen',
+                           teams$`Team Jon`       ~ 'orange',
+                           teams$`Team Tattoo`    ~ 'magenta',
+                           teams$`Team Chungus`   ~ 'gold',
+                           teams$`Team Mo`        ~ 'skyblue',
+                           teams$`Team Jane`      ~ 'red3',
+                           teams$`Team Kalaginho` ~ 'royalblue',
+                           teams$`Team Zest`      ~ 'forestgreen',
+                           teams$`Team Daav`      ~ 'darkgrey'
+                           ), .after = 1) %>%
+  arrange(Bracket, Team)
+```
+
+```{r}
+# @ Daav don't bother running this chunk - it is just for checking the permutations like we already did
+
+# ## CHECK MATCHES ##
+
+# read in perms
+perms <- read_csv('data/9perms.csv', col_names = F) %>% as.matrix()
+
+# get number of permutations
+n = 9 # set size
+r = 3 # subset size
+nperms = factorial(n) / (factorial(r)*factorial(n-r))
+
+# set number of pools
+npools = nrow(teams)
+
+# initialise vector for identifying cases of zero matches found
+all_no_match = rep(999,npools)
+
+for(i in 1:npools){
+  # filter data and create match vector
+  no_match = rep(0,nperms)
+
+  # loop through all possible perms and filter non-matched cars
+  for(j in 1:nperms){
+    idx <- perms[j,] %>% unname()
+    tmp <- getCars(data, idx, i)
+    if(nrow(tmp)==0){
+      no_match[j] <- 1
+      print(names(select(tmp,-1)))
+      }
+  }
+  all_no_match[i] <- sum(no_match)
+}
+```
+
+
+# Day 1 
+
+## Cars
+
+```{r}
+# @ Daav here you just put in the numbers of the teams in each bracket for the upcoming day
+
+# Day 1 matches
+top <- c(1,2,3)
+mid <- c(4,5,6)
+bot <- c(7,8,9)
+```
+
+```{r}
+# @ Daav this bit is important - this is where you get the car options for the upcoming day
+# run each of these chunks to get a table with the available cars
+
+getMatchups(data,top,npools)
+```
+```{r}
+getMatchups(data,mid,npools)
+```
+```{r}
+getMatchups(data,bot,npools)
+```
+
+```{r}
+# @ Daav this is where you make the table with your chosen cars for each bracket
+# manually input the cars for each of the 7 pools, run the chunk and screenshot
+
+# match-up decision
+top_pick <- tibble(
+  Pool = c('Captain', 'Vice Captain', paste('Pool', 3:(npools))),
+  Car  = c('SS Maverick','SSS Fang','SSS Kobra','S Wild West','S Kobra','S Taxi')
+) %>%
+  cbind(teams[,top])
+
+knitr::kable(top_pick, caption = "Top Bracket") %>%
+  kable_styling(bootstrap_options = c("striped", "condensed")) %>%
+  column_spec(2, bold = TRUE, color = "white", background = "navy")
+```
+
+```{r}
+# @ Daav same here
+
+# match-up decision
+mid_pick <- tibble(
+  Pool = c('Captain', 'Vice Captain', paste('Pool', 3:(npools))),
+  Car  = c('SS Maverick','SSS Fang','SSS Kobra','S Wild West','S Kobra','S Taxi')
+) %>%
+  cbind(teams[,mid])
+
+knitr::kable(mid_pick, caption = "Top Bracket") %>%
+  kable_styling(bootstrap_options = c("striped", "condensed")) %>%
+  column_spec(2, bold = TRUE, color = "white", background = "navy")
+```
+
+```{r}
+# @ Daav same here
+
+# match-up decision
+bot_pick <- tibble(
+  Pool = c('Captain', 'Vice Captain', paste('Pool', 3:(npools))),
+  Car  = c('S Centaur','SSS Fang','SSS Fang','SS Comet','S Kobra','S Bandit')
+) %>%
+  cbind(teams[,bot])
+
+knitr::kable(bot_pick, caption = "Bottom Bracket") %>%
+  kable_styling(bootstrap_options = c("striped", "condensed")) %>%
+  column_spec(2, bold = TRUE, color = "white", background = "navy")
+```
+
+
+## Results
+
+```{r}
+# @ Daav run this but with some changes per day:
+# change the name of the file to the right day 
+# change everything that says day1 to the correct day
+# (this is probably not a good way to code but at least it is intuitive)
+
+# read in points per team
+day1_raw <- read_csv('data/daav_cup_results - Day1.csv') 
+
+day1_results <- map_dfr(1:nteams, ~getResults(day1_raw, .x, npools)) 
+
+day1_positions <- day1_results %>%
+  mutate(Position = case_match(Points, 
+                               3 ~ '(1st)',
+                               1 ~ '(2nd)',
+                               0 ~ '(3rd)',
+                               .default = NULL),
+         Points = rep(1:npools,nteams)) %>%
+  unite('Player', Position, Player, sep=' ') %>%
+  pivot_wider(names_from = Team, values_from = Player) %>%
+  select(-Points)
+
+day1_summary <- day1_results %>%
+  group_by(Team) %>%
+  summarise(Points = sum(Points)) %>%
+  arrange(desc(Points)) %>%
+  mutate(Rank = 1:nteams, .before=1)
+
+standings <- arrange(day1_summary,Team) %>%
+  arrange(desc(Points)) %>%
+  mutate(Rank = 1:nteams, .before=1)
+
+standings1 <- standings
+
+mvp <- day1_results %>%
+  arrange(desc(Points)) %>%
+  mutate(Rank = 1:(nteams*npools), Team = NULL, .before=1)
+```
+
+```{r}
+# make points table 
+knitr::kable(day1_summary, caption = "Day 1 Standings", align = c("r", "l")) %>%
+  kable_styling(bootstrap_options = c("striped", "condensed"), 
+                full_width = F) %>%
+  column_spec(2, bold = TRUE, color = "white", background = "navy")
+```
+
+
+
+
+
+
+
