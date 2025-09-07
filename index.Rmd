@@ -113,7 +113,7 @@ data <- read_csv('data/daavdata.csv') %>%
   arrange(Bracket, Team)
 ```
 
-# Day 1 - Factory
+# Day 1 - Oasis
 
 ```{r}
 # Day 1 matches
@@ -160,19 +160,19 @@ mvp <- day1_results %>%
 ```{r}
 # daily results
 top_results <- tibble(
-  Car  = c('SS Maverick','SSS Fang','SSS Kobra','S Wild West','S Kobra','S Taxi','S Taxi')
+  Car  = c('SSS Thor','SSS Glamour','SSS Time Machine','SSS Thor','SSS Glamour','SS Atomic','SS Glamour')
 ) %>%
   cbind(day1_positions[,top])
 
 # match-up decision
 mid_results <- tibble(
-  Car  = c('S Centaur','SSS Fang','SSS Fang','SS Comet','S Kobra','S Bandit','S Taxi')
+  Car  = c('SSS Glamour','SSS Samurai','SSS Wild West','SSS Glamour','SSS Comet','SS Bandit','SS Minni')
 ) %>%
   cbind(day1_positions[,mid])
 
 # match-up decision
 bot_results <- tibble(
-  Car  = c('S Centaur','SSS Fang','SSS Fang','SS Comet','S Kobra','S Bandit','S Taxi')
+  Car  = c('SSS Fang','SSS Glamour','SSS Fang','SSS Predator','SS Thor','SS Atomic','SS Tofu')
 ) %>%
   cbind(day1_positions[,bot])
 ```
