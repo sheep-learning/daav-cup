@@ -54,6 +54,30 @@ teams <- tibble(
 nteams = ncol(teams)
 npools = nrow(teams)
 
+# function for shortening/splitting certain names
+cutNames <- function(df){
+  mutate(df, Player = case_match(Player,
+             'JonReremy' ~ 'Jon',
+             'Skanderberg' ~  'Skander',
+             'Strawberry' ~ 'Strawb',
+             'Speedkami' ~ 'Speed',
+             'Swagzilla' ~ 'Swagz',
+             'Partly_Sunny' ~ 'Partly Sunny',
+             'Bangstarserve' ~ 'Bangstar',
+             'Kalaginho' ~ 'Kalag',
+             'AhsokaBee' ~ 'Ahsoka Bee', 
+             'Cassiopea' ~ 'Cassio',
+             .default = Player),
+         Player = case_when(
+           nchar(Player) <= 3 ~ str_pad(Player,
+                                        width = 4,
+                                        side = "right",
+                                        pad = "\u00A0"),
+           .default = Player)) 
+}
+```
+
+```{r}
 # import sheet
 data <- read_csv('data/daavdata.csv') %>%
   rename(Name = `What name do you go by in the discord?`,
@@ -101,9 +125,10 @@ bot <- c(7,8,9)
 ```{r}
 # read in points per team
 day1_raw <- read_csv('data/daav_cup_results - Day1.csv') 
-
-day1_results <- map_dfr(1:nteams, ~getResults(day1_raw, .x, npools)) 
-
+  
+day1_results <- map_dfr(1:nteams, ~getResults(day1_raw, .x, npools)) %>%
+  cutNames()
+  
 day1_positions <- day1_results %>%
   mutate(Position = case_match(Points, 
                                3 ~ '(1st)',
