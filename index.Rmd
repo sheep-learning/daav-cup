@@ -239,7 +239,7 @@ kable(bot_results) %>%
 ```
 
 
-# Day 1 - Standings
+# Standings
 
 Column {data-width=125}
 --------------
