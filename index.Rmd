@@ -292,19 +292,19 @@ mvp <- inner_join(mvp,day2_results,by='Player') %>%
 top_results <- tibble(
   Car  = c('SSS Thor','SSS Glamour','SSS Time Machine','SSS Thor','SSS Glamour','SS Atomic','SS Glamour')
 ) %>%
-  cbind(day1_positions[,top])
+  cbind(day2_positions[,top])
 
 # match-up decision
 mid_results <- tibble(
   Car  = c('SSS Glamour','SSS Samurai','SSS Wild West','SSS Glamour','SSS Comet','SS Bandit','SS Minni')
 ) %>%
-  cbind(day1_positions[,mid])
+  cbind(day2_positions[,mid])
 
 # match-up decision
 bot_results <- tibble(
   Car  = c('SSS Fang','SSS Glamour','SSS Fang','SSS Predator','SS Thor','SS Atomic','SS Tofu')
 ) %>%
-  cbind(day1_positions[,bot])
+  cbind(day2_positions[,bot])
 ```
 
 
