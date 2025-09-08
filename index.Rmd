@@ -239,14 +239,144 @@ kable(bot_results) %>%
 ```
 
 
+# Day 2 - Hairpin
+
+```{r}
+# Day 1 matches
+top <- c(4,2,8)
+mid <- c(9,6,1)
+bot <- c(3,5,7)
+```
+
+```{r}
+# read in points per team
+day2_raw <- read_csv('data/daav_cup_results - Day2.csv') 
+  
+day2_results <- map_dfr(1:nteams, ~getResults(day2_raw, .x, npools)) %>%
+  cutNames()
+  
+day2_positions <- day2_results %>%
+  mutate(Position = case_match(Points, 
+                               3 ~ '(1st)',
+                               1 ~ '(2nd)',
+                               0 ~ '(3rd)',
+                               .default = NULL),
+         Points = rep(1:npools,nteams)) %>%
+  unite('Player', Position, Player, sep=' ') %>%
+  pivot_wider(names_from = Team, values_from = Player) %>%
+  select(-Points)
+
+day2_summary <- day2_results %>%
+  group_by(Team) %>%
+  summarise(Points = sum(Points)) %>%
+  arrange(desc(Points)) %>%
+  mutate(Rank = 1:nteams, .before=1)
+
+standings <- inner_join(standings,select(day2_summary,-Rank),by='Team') %>%
+  mutate(Points = Points.x + Points.y) %>%
+  select(-Points.x,-Points.y) %>%
+  arrange(desc(Points),Team) %>%
+  mutate(Rank = 1:nteams, .before=1)
+
+standings2 <- standings
+
+mvp <- inner_join(mvp,day2_results,by='Player') %>%
+  mutate(Points = Points.x + Points.y) %>%
+  select(-Points.x,-Points.y,-Team) %>%
+  arrange(desc(Points)) %>%
+  mutate(Rank = 1:(nteams*npools), .before=1)
+```
+
+```{r}
+# daily results
+top_results <- tibble(
+  Car  = c('SSS Thor','SSS Glamour','SSS Time Machine','SSS Thor','SSS Glamour','SS Atomic','SS Glamour')
+) %>%
+  cbind(day1_positions[,top])
+
+# match-up decision
+mid_results <- tibble(
+  Car  = c('SSS Glamour','SSS Samurai','SSS Wild West','SSS Glamour','SSS Comet','SS Bandit','SS Minni')
+) %>%
+  cbind(day1_positions[,mid])
+
+# match-up decision
+bot_results <- tibble(
+  Car  = c('SSS Fang','SSS Glamour','SSS Fang','SSS Predator','SS Thor','SS Atomic','SS Tofu')
+) %>%
+  cbind(day1_positions[,bot])
+```
+
+
+Column {data-width=250}
+--------------
+### Top Bracket
+```{r}
+kable(top_results) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "condensed"),
+    full_width = FALSE,
+    position = "left"
+  ) %>%
+  column_spec(
+    1, width = "100px", bold = TRUE, color = "white", background = "red3"
+  ) %>%
+  column_spec(
+    2:4,
+    width = "50px",
+  )
+
+```
+
+
+Column {data-width=250}
+--------------
+### Middle Bracket
+```{r}
+kable(mid_results) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "condensed"),
+    full_width = FALSE,
+    position = "left"
+  ) %>%
+  column_spec(
+    1, width = "100px", bold = TRUE, color = "white", background = "red3"
+  ) %>%
+  column_spec(
+    2:4,
+    width = "50px",
+  )
+```
+
+
+Column {data-width=250}
+--------------
+### Bottom Bracket
+```{r}
+kable(bot_results) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "condensed"),
+    full_width = FALSE,
+    position = "left"
+  ) %>%
+  column_spec(
+    1, width = "100px", bold = TRUE, color = "white", background = "red3"
+  ) %>%
+  column_spec(
+    2:4,
+    width = "50px"
+  )
+```
+
+
 # Standings
 
 Column {data-width=125}
 --------------
-### Day 1 Results
+### Day 2 Results
 ```{r}
 # points table 
-knitr::kable(day1_summary, align = c("r", "l")) %>%
+knitr::kable(day2_summary, align = c("r", "l")) %>%
   kable_styling(bootstrap_options = c("striped", "condensed"), 
                 full_width = F) %>%
   column_spec(2, width='3cm',  bold = TRUE, color = "white", background = "red3")
@@ -275,6 +405,15 @@ knitr::kable(mvp, align = c("r", "l")) %>%
                 full_width = F) %>%
   column_spec(2, width='3cm', bold = TRUE, color = "white", background = "red3")
 ```
+
+
+
+
+
+
+
+
+
 
 
 
