@@ -1,0 +1,117 @@
+---
+title: "Daav Cup Results"
+author: "TD Sheep"
+date: "2024-12-07"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      message=FALSE)
+library(tidyverse)
+library(kableExtra)
+load('utils/functions.RData')
+load('utils/table_functions.RData')
+load('utils/team_data.RData')
+```
+
+# Day 1 - Oasis
+
+```{r}
+day1_raw <- read_csv('data/daav_cup_results - Day1.csv') 
+
+day1_results <- map_dfr(1:nteams, ~getResults(day1_raw, .x, npools)) %>%
+  cutNames()
+
+day1_summary <- getSummary(day1_results)
+
+# NOTE: for day 1, standings and mvp are initialised differently
+standings1 <- arrange(day1_summary,Team) %>%
+  arrange(desc(Points)) %>%
+  mutate(Rank = 1:nteams, .before=1)
+
+mvp <- day1_results %>%
+  arrange(desc(Points)) %>%
+  mutate(Rank = 1:(nteams*npools), Team = NULL, .before=1)
+```
+
+### Day 1 Standings
+
+```{r}
+showResults(day1_summary)
+```
+
+
+# Day 2 - Hairpin
+
+```{r}
+day2_raw <- read_csv('data/daav_cup_results - Day2.csv') 
+  
+day2_results <- map_dfr(1:nteams, ~getResults(day2_raw, .x, npools)) %>%
+  cutNames()
+  
+day2_summary <- getSummary(day2_results) 
+
+standings2 <- getStandings(day2_summary, standings1)
+
+mvp <- getMVP(mvp, day2_results)
+```
+
+```{r}
+showResults(day2_summary)
+```
+
+```{r}
+showResults(standings2)
+```
+
+
+# Day 3 - Factory
+
+```{r}
+day3_raw <- read_csv('data/daav_cup_results - Day3.csv') 
+  
+day3_results <- map_dfr(1:nteams, ~getResults(day3_raw, .x, npools)) %>%
+  cutNames()
+  
+day3_summary <- getSummary(day3_results) 
+
+standings3 <- getStandings(day3_summary, standings2)
+
+mvp <- getMVP(mvp, day3_results)
+```
+
+```{r}
+showResults(day3_summary)
+```
+
+```{r}
+showResults(standings3)
+```
+
+
+# Day 4 - River Peak
+
+```{r, eval=FALSE}
+day4_raw <- read_csv('data/daav_cup_results - Day4.csv') 
+  
+day4_results <- map_dfr(1:nteams, ~getResults(day4_raw, .x, npools)) %>%
+  cutNames()
+  
+day4_summary <- getSummary(day4_results) 
+
+standings4 <- getStandings(day4_summary, standings3)
+
+mvp <- getMVP(mvp, day4_results)
+```
+
+### Day 4 Standings
+```{r, eval=FALSE}
+showResults(day4_summary)
+```
+```{r, eval=FALSE}
+showResults(standings4)
+```
+
+
+

@@ -20,7 +20,6 @@ output:
     vertical_layout: fill
 ---
 
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
@@ -29,88 +28,10 @@ library(flexdashboard)
 library(RColorBrewer)
 library(plotly)
 library(kableExtra)
-load('Functions.RData')
-```
-
-```{css, echo=FALSE}
-table {
-  table-layout: fixed;
-}
-```
-
-```{r}
-# define teams
-teams <- tibble(
-  `Team Jango`  = c('Jango', 'Bean', 'Skanderberg', 'Strawberry', 'Speedkami', '2bskii', 'Swagzilla'),
-  `Team Jon`    = c('Jon', 'Yutaaah', 'Bubs', 'Nick CPA', 'D1ZZY', 'Nic', 'Safalada'),
-  `Team Tattoo`     = c('Tattoo', 'Fawn', 'Kenny', 'Fallen', 'Kux', 'Enkobo', 'Jackson'),
-  `Team Chungus`  = c('Chungus', 'Jhoni', 'Crxzy', 'Tazaky', 'FBR', 'Zuhayer', 'Partly_Sunny'),
-  `Team Mo` = c('Mo', 'Tristan', 'Farts', 'Ranger Robert', 'Fletch', 'Zaorn', 'bangstarserve'),
-  `Team Jane`   = c('Jane', 'Deke', 'Jrash', 'Luh', 'Jxn', 'snpnirav', 'Bobierto'),
-  `Team Kalag` = c('Kalag', 'KenDan', 'Steefee', 'Nah Id Drift', 'Colrr', 'Sly', 'Bebebalahahaha'),
-  `Team Zest`   = c('Zest', 'Kalipr', 'Choochgod', 'Thiasma', 'Yogurt', 'Mr Wood', 'Paradox'),
-  `Team Daav`   = c('Daav', 'Zenith', 'DC Racer', 'Cassiopea', 'Velox', 'Sokpupt', 'Barebuha')
-)
-nteams = ncol(teams)
-npools = nrow(teams)
-
-# function for shortening/splitting certain names
-cutNames <- function(df){
-  mutate(df, Player = case_match(Player,
-             'JonReremy' ~ 'Jon',
-             'Skanderberg' ~  'Skander',
-             'Strawberry' ~ 'Strawb',
-             'Speedkami' ~ 'Speed',
-             'Swagzilla' ~ 'Swagz',
-             'Partly_Sunny' ~ 'Partly Sunny',
-             'Bangstarserve' ~ 'Bangstar',
-             'Kalaginho' ~ 'Kalag',
-             'AhsokaBee' ~ 'Ahsoka Bee', 
-             'Cassiopea' ~ 'Cassio',
-             .default = Player),
-         Player = case_when(
-           nchar(Player) <= 3 ~ str_pad(Player,
-                                        width = 4,
-                                        side = "right",
-                                        pad = "\u00A0"),
-           .default = Player)) 
-}
-```
-
-```{r}
-# import sheet
-data <- read_csv('data/daavdata.csv') %>%
-  rename(Name = `What name do you go by in the discord?`,
-         League = `What is the Highest league you have reached?`) %>%
-  select(-c(1,3)) %>%
-  filter(Bracket != '') %>%
-  mutate(across(Ace:Spectre, 
-                ~ case_match(., 
-                             "Don't have/cannot upgrade" ~ "NULL",
-                             .default = .))) %>%
-  mutate(Team = case_match(Name, 
-                           teams$`Team Jango`  ~ 1,
-                           teams$`Team Jon`    ~ 2,
-                           teams$`Team Tattoo` ~ 3,
-                           teams$`Team Chungus`~ 4,
-                           teams$`Team Mo`     ~ 5,
-                           teams$`Team Jane`   ~ 6,
-                           teams$`Team Kalag`  ~ 7,
-                           teams$`Team Zest`   ~ 8,
-                           teams$`Team Daav`   ~ 9
-                           ),
-         Colour = case_match(Name, 
-                           teams$`Team Jango`   ~ 'lightgreen',
-                           teams$`Team Jon`     ~ 'orange',
-                           teams$`Team Tattoo`  ~ 'magenta',
-                           teams$`Team Chungus` ~ 'gold',
-                           teams$`Team Mo`      ~ 'skyblue',
-                           teams$`Team Jane`    ~ 'red3',
-                           teams$`Team Kalag`   ~ 'royalblue',
-                           teams$`Team Zest`    ~ 'forestgreen',
-                           teams$`Team Daav`    ~ 'darkgrey'
-                           ), .after = 1) %>%
-  arrange(Bracket, Team)
+load('utils/functions.RData')
+load('utils/table_functions.RData')
+load('utils/team_data.RData')
+load('utils/cars_df.RData')
 ```
 
 # Day 1 - Oasis
@@ -123,119 +44,42 @@ bot <- c(7,8,9)
 ```
 
 ```{r}
-# read in points per team
 day1_raw <- read_csv('data/daav_cup_results - Day1.csv') 
-  
+
 day1_results <- map_dfr(1:nteams, ~getResults(day1_raw, .x, npools)) %>%
   cutNames()
-  
-day1_positions <- day1_results %>%
-  mutate(Position = case_match(Points, 
-                               3 ~ '(1st)',
-                               1 ~ '(2nd)',
-                               0 ~ '(3rd)',
-                               .default = NULL),
-         Points = rep(1:npools,nteams)) %>%
-  unite('Player', Position, Player, sep=' ') %>%
-  pivot_wider(names_from = Team, values_from = Player) %>%
-  select(-Points)
 
-day1_summary <- day1_results %>%
-  group_by(Team) %>%
-  summarise(Points = sum(Points)) %>%
+day1_summary <- getSummary(day1_results)
+
+# NOTE: for day 1, standings and mvp are initialised differently
+standings1 <- arrange(day1_summary,Team) %>%
   arrange(desc(Points)) %>%
   mutate(Rank = 1:nteams, .before=1)
-
-standings <- arrange(day1_summary,Team) %>%
-  arrange(desc(Points)) %>%
-  mutate(Rank = 1:nteams, .before=1)
-
-standings1 <- standings
 
 mvp <- day1_results %>%
   arrange(desc(Points)) %>%
   mutate(Rank = 1:(nteams*npools), Team = NULL, .before=1)
+
+positions <- getPositions(day1_results)
 ```
-
-```{r}
-# daily results
-top_results <- tibble(
-  Car  = c('SSS Thor','SSS Glamour','SSS Time Machine','SSS Thor','SSS Glamour','SS Atomic','SS Glamour')
-) %>%
-  cbind(day1_positions[,top])
-
-# match-up decision
-mid_results <- tibble(
-  Car  = c('SSS Glamour','SSS Samurai','SSS Wild West','SSS Glamour','SSS Comet','SS Bandit','SS Minni')
-) %>%
-  cbind(day1_positions[,mid])
-
-# match-up decision
-bot_results <- tibble(
-  Car  = c('SSS Fang','SSS Glamour','SSS Fang','SSS Predator','SS Thor','SS Atomic','SS Tofu')
-) %>%
-  cbind(day1_positions[,bot])
-```
-
 
 Column {data-width=250}
 --------------
 ### Top Bracket
 ```{r}
-kable(top_results) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "condensed"),
-    full_width = FALSE,
-    position = "left"
-  ) %>%
-  column_spec(
-    1, width = "100px", bold = TRUE, color = "white", background = "red3"
-  ) %>%
-  column_spec(
-    2:4,
-    width = "50px",
-  )
-
+indivResults(cars_df$day1_top, positions, top)
 ```
-
-
 Column {data-width=250}
 --------------
 ### Middle Bracket
 ```{r}
-kable(mid_results) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "condensed"),
-    full_width = FALSE,
-    position = "left"
-  ) %>%
-  column_spec(
-    1, width = "100px", bold = TRUE, color = "white", background = "red3"
-  ) %>%
-  column_spec(
-    2:4,
-    width = "50px",
-  )
+indivResults(cars_df$day1_mid, positions, mid)
 ```
-
-
 Column {data-width=250}
 --------------
 ### Bottom Bracket
 ```{r}
-kable(bot_results) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "condensed"),
-    full_width = FALSE,
-    position = "left"
-  ) %>%
-  column_spec(
-    1, width = "100px", bold = TRUE, color = "white", background = "red3"
-  ) %>%
-  column_spec(
-    2:4,
-    width = "50px"
-  )
+indivResults(cars_df$day1_bot, positions, bot)
 ```
 
 
@@ -249,123 +93,81 @@ bot <- c(3,5,7)
 ```
 
 ```{r}
-# read in points per team
 day2_raw <- read_csv('data/daav_cup_results - Day2.csv') 
   
 day2_results <- map_dfr(1:nteams, ~getResults(day2_raw, .x, npools)) %>%
   cutNames()
   
-day2_positions <- day2_results %>%
-  mutate(Position = case_match(Points, 
-                               3 ~ '(1st)',
-                               1 ~ '(2nd)',
-                               0 ~ '(3rd)',
-                               .default = NULL),
-         Points = rep(1:npools,nteams)) %>%
-  unite('Player', Position, Player, sep=' ') %>%
-  pivot_wider(names_from = Team, values_from = Player) %>%
-  select(-Points)
+day2_summary <- getSummary(day2_results) 
 
-day2_summary <- day2_results %>%
-  group_by(Team) %>%
-  summarise(Points = sum(Points)) %>%
-  arrange(desc(Points)) %>%
-  mutate(Rank = 1:nteams, .before=1)
+standings2 <- getStandings(day2_summary, standings1)
 
-standings <- inner_join(standings,select(day2_summary,-Rank),by='Team') %>%
-  mutate(Points = Points.x + Points.y) %>%
-  select(-Points.x,-Points.y) %>%
-  arrange(desc(Points),Team) %>%
-  mutate(Rank = 1:nteams, .before=1)
+mvp <- getMVP(mvp, day2_results)
 
-standings2 <- standings
-
-mvp <- inner_join(mvp,day2_results,by='Player') %>%
-  mutate(Points = Points.x + Points.y) %>%
-  select(-Points.x,-Points.y,-Team) %>%
-  arrange(desc(Points)) %>%
-  mutate(Rank = 1:(nteams*npools), .before=1)
+positions <- getPositions(day2_results)
 ```
-
-```{r}
-# daily results
-top_results <- tibble(
-  Car  = c('just','remember','what','car','you','used','nerd')
-) %>%
-  cbind(day2_positions[,top])
-
-# match-up decision
-mid_results <- tibble(
-  Car  = c('just','remember','what','car','you','used','nerd')
-) %>%
-  cbind(day2_positions[,mid])
-
-# match-up decision
-bot_results <- tibble(
-  Car  = c('just','remember','what','car','you','used','nerd')
-) %>%
-  cbind(day2_positions[,bot])
-```
-
 
 Column {data-width=250}
 --------------
 ### Top Bracket
 ```{r}
-kable(top_results) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "condensed"),
-    full_width = FALSE,
-    position = "left"
-  ) %>%
-  column_spec(
-    1, width = "100px", bold = TRUE, color = "white", background = "red3"
-  ) %>%
-  column_spec(
-    2:4,
-    width = "50px",
-  )
-
+indivResults(cars_df$day2_top, positions, top)
 ```
-
-
 Column {data-width=250}
 --------------
 ### Middle Bracket
 ```{r}
-kable(mid_results) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "condensed"),
-    full_width = FALSE,
-    position = "left"
-  ) %>%
-  column_spec(
-    1, width = "100px", bold = TRUE, color = "white", background = "red3"
-  ) %>%
-  column_spec(
-    2:4,
-    width = "50px",
-  )
+indivResults(cars_df$day2_mid, positions, mid)
 ```
-
-
 Column {data-width=250}
 --------------
 ### Bottom Bracket
 ```{r}
-kable(bot_results) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "condensed"),
-    full_width = FALSE,
-    position = "left"
-  ) %>%
-  column_spec(
-    1, width = "100px", bold = TRUE, color = "white", background = "red3"
-  ) %>%
-  column_spec(
-    2:4,
-    width = "50px"
-  )
+indivResults(cars_df$day2_bot, positions, bot)
+```
+
+
+# Day 3 - Factory
+
+```{r}
+top <- c(8,4,6)
+mid <- c(1,5,9)
+bot <- c(2,7,3)
+```
+
+```{r}
+# read in points per team
+day3_raw <- read_csv('data/daav_cup_results - Day3.csv') 
+  
+day3_results <- map_dfr(1:nteams, ~getResults(day3_raw, .x, npools)) %>%
+  cutNames()
+  
+day3_summary <- getSummary(day3_results) 
+
+standings3 <- getStandings(day3_summary, standings2)
+
+mvp <- getMVP(mvp, day3_results)
+
+positions <- getPositions(day3_results)
+```
+
+Column {data-width=250}
+--------------
+### Top Bracket
+```{r}
+indivResults(cars_df$day3_top, positions, top)
+```
+Column {data-width=250}
+--------------
+### Middle Bracket
+```{r}
+indivResults(cars_df$day3_mid, positions, mid)
+```
+Column {data-width=250}
+--------------
+### Bottom Bracket
+```{r}
+indivResults(cars_df$day3_bot, positions, bot)
 ```
 
 
@@ -373,40 +175,22 @@ kable(bot_results) %>%
 
 Column {data-width=125}
 --------------
-### Day 2 Results
+### Day 3 Results
 ```{r}
-# points table 
-knitr::kable(day2_summary, align = c("r", "l")) %>%
-  kable_styling(bootstrap_options = c("striped", "condensed"), 
-                full_width = F) %>%
-  column_spec(2, width='3cm',  bold = TRUE, color = "white", background = "red3")
+dailyResults(day3_summary)
 ```
-
-
 Column {data-width=125}
 --------------
 ### Overall Standings
 ```{r}
-# points table 
-knitr::kable(standings, align = c("r", "l")) %>%
-  kable_styling(bootstrap_options = c("striped", "condensed"), 
-                full_width = F) %>%
-  column_spec(2, width='3cm',  bold = TRUE, color = "white", background = "red3")
+dailyResults(standings3)
 ```
-
-
 Column {data-width=125}
 --------------
 ### MVP Standings
 ```{r}
-# points table 
-knitr::kable(mvp, align = c("r", "l")) %>%
-  kable_styling(bootstrap_options = c("striped", "condensed"), 
-                full_width = F) %>%
-  column_spec(2, width='3cm', bold = TRUE, color = "white", background = "red3")
+dailyResults(mvp)
 ```
-
-
 
 
 

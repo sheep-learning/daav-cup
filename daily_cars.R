@@ -1,0 +1,136 @@
+cars_df <- tibble::tibble(
+  # Day 1
+  day1_top = c('SSS Thor',
+               'SSS Glamour',
+               'SSS Time Machine',
+               'SSS Thor',
+               'SSS Glamour',
+               'SS Atomic',
+               'SS Glamour'),
+  
+  day1_mid = c('SSS Glamour',
+               'SSS Samurai',
+               'SSS Wild West',
+               'SSS Glamour',
+               'SSS Comet',
+               'SS Bandit',
+               'SS Minni'),
+  
+  day1_bot = c('SSS Fang',
+               'SSS Glamour',
+               'SSS Fang',
+               'SSS Predator',
+               'SS Thor',
+               'SS Atomic',
+               'SS Tofu'),
+  
+  ###############################################
+  
+  # Day 2
+  day2_top =  c('SSS Merlin',
+                'SSS Horizon',
+                'SSS Comet',
+                'SS Fang',
+                'SSS Glamour',
+                'SSS Thor',
+                'SS Tofu'),
+  
+  day2_mid = c('SSS Taxi',
+               'SSS Coupe',
+               'SSS  Leap',
+               'SSS Mamba',
+               'SSS Time Machine',
+               'SSS Maverick',
+               'SS Hornet'),
+  
+  day2_bot = c('SS Rodeo',
+               'SSS Conqueror',
+               'SSS Thor',
+               'SSS Coupe',
+               'SS Maverick',
+               'SSS Mamba',
+               'SS Minni'),
+  
+  ###############################################
+  
+  # Day 3
+  day3_top = c('SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum'),
+  
+  day3_mid = c('SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum'),
+  
+  day3_bot = c('SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum'),
+  
+  ###############################################
+  
+  # Day 3
+  day4_top = c('SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum'),
+  
+  day4_mid = c('SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum'),
+  
+  day4_bot = c('SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum'),
+  
+  ###############################################
+  
+  # Day 5
+  day5_top = c('SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum'),
+  
+  day5_mid = c('SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum'),
+  
+  day5_bot = c('SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum',
+               'SSS ur mum')
+)
+  
+save(cars_df, file="cars_df.RData")
