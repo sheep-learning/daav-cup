@@ -54,56 +54,56 @@ cars_df <- tibble::tibble(
   ###############################################
   
   # Day 3
-  day3_top = c('SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum'),
+  day3_top = c('SSS Minni',
+               'SSS Time Machine',
+               'SSS Wingman',
+               'SSS Glamour',
+               'SSS Chinese Van',
+               'SS Satin',
+               'S Kobra'),
   
-  day3_mid = c('SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum'),
+  day3_mid = c('SSS Tofu',
+               'SSS Samurai',
+               'SSS Thor',
+               'SSS Thor',
+               'SSS Time Machine',
+               'SSS Time Machine',
+               'SS Ghost'),
   
-  day3_bot = c('SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum'),
+  day3_bot = c('SSS Thor',
+               'SSS Minni',
+               'SSS Thor',
+               'SSS Minni',
+               'SSS Glamour',
+               'SS Leap',
+               'S Merlin'),
   
   ###############################################
   
-  # Day 3
-  day4_top = c('SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum'),
+  # Day 4
+  day4_top = c('SSS Expedition',
+               'SSS Time Machine',
+               'SSS Fire Arrow',
+               'SSS Hopper',
+               'SSS Thor',
+               'SS Safari',
+               'SS Agent'),
   
-  day4_mid = c('SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum'),
+  day4_mid = c('SSS Time Machine',
+               'SSS Krystal Ship',
+               'SSS Fang',
+               'SSS Tow Truck',
+               'S Duster',
+               'SS Agent',
+               'SS Tofu'),
   
-  day4_bot = c('SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum'),
+  day4_bot = c('SSS Predator',
+               'SSS Conqueror',
+               'SSS Thor',
+               'SSS Predator',
+               'SS Conqueror',
+               'SS Krystal Ship',
+               'SS Krystal Ship'),
   
   ###############################################
   
@@ -133,4 +133,4 @@ cars_df <- tibble::tibble(
                'SSS ur mum')
 )
   
-save(cars_df, file="cars_df.RData")
+save(cars_df, file="utils/cars_df.RData")
