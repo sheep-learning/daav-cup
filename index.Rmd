@@ -6,7 +6,7 @@ output:
     theme: 
       version: 4
       bg: "#edf4ff"
-      fg: "#0f49a6" 
+      fg: "black" 
       primary: "gold"
       base_font: 
         google: Prompt
@@ -47,7 +47,7 @@ bot <- c(7,8,9)
 day1_raw <- read_csv('data/daav_cup_results - Day1.csv') 
 
 day1_results <- map_dfr(1:nteams, ~getResults(day1_raw, .x, npools)) %>%
-  cutNames()
+  fixNames()
 
 day1_summary <- getSummary(day1_results)
 
@@ -63,24 +63,38 @@ mvp <- day1_results %>%
 positions <- getPositions(day1_results)
 ```
 
-Column {data-width=250}
+Column {data-width=450}
 --------------
 ### Top Bracket
 ```{r}
 indivResults(cars_df$day1_top, positions, top)
 ```
-Column {data-width=250}
---------------
 ### Middle Bracket
 ```{r}
 indivResults(cars_df$day1_mid, positions, mid)
 ```
-Column {data-width=250}
---------------
 ### Bottom Bracket
 ```{r}
 indivResults(cars_df$day1_bot, positions, bot)
 ```
+
+Column {data-width=125}
+--------------
+### Day 1 Standings
+```{r}
+dailyResults(day1_summary)
+```
+### Overall Standings
+```{r}
+dailyResults(standings1)
+```
+Column {data-width=125}
+--------------
+### MVP Standings
+```{r}
+dailyResults(mvp)
+```
+
 
 
 # Day 2 - Hairpin
@@ -96,7 +110,7 @@ bot <- c(3,5,7)
 day2_raw <- read_csv('data/daav_cup_results - Day2.csv') 
   
 day2_results <- map_dfr(1:nteams, ~getResults(day2_raw, .x, npools)) %>%
-  cutNames()
+  fixNames()
   
 day2_summary <- getSummary(day2_results) 
 
@@ -107,23 +121,36 @@ mvp <- getMVP(mvp, day2_results)
 positions <- getPositions(day2_results)
 ```
 
-Column {data-width=250}
+Column {data-width=450}
 --------------
 ### Top Bracket
 ```{r}
 indivResults(cars_df$day2_top, positions, top)
 ```
-Column {data-width=250}
---------------
 ### Middle Bracket
 ```{r}
 indivResults(cars_df$day2_mid, positions, mid)
 ```
-Column {data-width=250}
---------------
 ### Bottom Bracket
 ```{r}
 indivResults(cars_df$day2_bot, positions, bot)
+```
+
+Column {data-width=125}
+--------------
+### Day 2 Standings
+```{r}
+dailyResults(day2_summary)
+```
+### Overall Standings
+```{r}
+dailyResults(standings2)
+```
+Column {data-width=125}
+--------------
+### MVP Standings
+```{r}
+dailyResults(mvp)
 ```
 
 
@@ -140,7 +167,7 @@ bot <- c(2,7,3)
 day3_raw <- read_csv('data/daav_cup_results - Day3.csv') 
   
 day3_results <- map_dfr(1:nteams, ~getResults(day3_raw, .x, npools)) %>%
-  cutNames()
+  fixNames()
   
 day3_summary <- getSummary(day3_results) 
 
@@ -151,24 +178,38 @@ mvp <- getMVP(mvp, day3_results)
 positions <- getPositions(day3_results)
 ```
 
-Column {data-width=250}
+Column {data-width=450}
 --------------
 ### Top Bracket
 ```{r}
 indivResults(cars_df$day3_top, positions, top)
 ```
-Column {data-width=250}
---------------
 ### Middle Bracket
 ```{r}
 indivResults(cars_df$day3_mid, positions, mid)
 ```
-Column {data-width=250}
---------------
 ### Bottom Bracket
 ```{r}
 indivResults(cars_df$day3_bot, positions, bot)
 ```
+
+Column {data-width=125}
+--------------
+### Day 3 Standings
+```{r}
+dailyResults(day3_summary)
+```
+### Overall Standings
+```{r}
+dailyResults(standings3)
+```
+Column {data-width=125}
+--------------
+### MVP Standings
+```{r}
+dailyResults(mvp)
+```
+
 
 
 # Day 4 - River Peak
@@ -184,7 +225,7 @@ bot <- c(7,5,3)
 day4_raw <- read_csv('data/daav_cup_results - Day4.csv') 
   
 day4_results <- map_dfr(1:nteams, ~getResults(day4_raw, .x, npools)) %>%
-  cutNames()
+  fixNames()
   
 day4_summary <- getSummary(day4_results) 
 
@@ -195,82 +236,30 @@ mvp <- getMVP(mvp, day4_results)
 positions <- getPositions(day4_results)
 ```
 
-Column {data-width=250}
+Column {data-width=450}
 --------------
 ### Top Bracket
 ```{r}
 indivResults(cars_df$day4_top, positions, top)
 ```
-Column {data-width=250}
---------------
 ### Middle Bracket
 ```{r}
 indivResults(cars_df$day4_mid, positions, mid)
 ```
-Column {data-width=250}
---------------
 ### Bottom Bracket
 ```{r}
 indivResults(cars_df$day4_bot, positions, bot)
 ```
 
-
-# Day 5 - Hairpin
-
-```{r}
-top <- c(8,1,9)
-mid <- c(6,2,7)
-bot <- c(5,4,3)
-```
-
-```{r}
-# read in points per team
-day5_raw <- read_csv('data/daav_cup_results - Day5.csv') 
-  
-day5_results <- map_dfr(1:nteams, ~getResults(day5_raw, .x, npools)) %>%
-  cutNames()
-  
-day5_summary <- getSummary(day5_results) 
-
-standings5 <- getStandings(day5_summary, standings4)
-
-mvp <- getMVP(mvp, day5_results)
-
-positions <- getPositions(day5_results)
-```
-
-Column {data-width=250}
---------------
-### Top Bracket
-```{r}
-indivResults(cars_df$day5_top, positions, top)
-```
-Column {data-width=250}
---------------
-### Middle Bracket
-```{r}
-indivResults(cars_df$day5_mid, positions, mid)
-```
-Column {data-width=250}
---------------
-### Bottom Bracket
-```{r}
-indivResults(cars_df$day5_bot, positions, bot)
-```
-
-# Standings
-
 Column {data-width=125}
 --------------
-### Day 5 Results
+### Day 4 Standings
 ```{r}
-dailyResults(day5_summary)
+dailyResults(day4_summary)
 ```
-Column {data-width=125}
---------------
 ### Overall Standings
 ```{r}
-dailyResults(standings5)
+dailyResults(standings4)
 ```
 Column {data-width=125}
 --------------
@@ -278,6 +267,110 @@ Column {data-width=125}
 ```{r}
 dailyResults(mvp)
 ```
+
+
+
+# Overview
+
+Column {data-width=300} 
+---------------------
+
+### Tournament Leaders
+```{r}
+# mvp table 
+knitr::kable(standings4, align = c("r", "l","l")) %>%
+  kable_styling(bootstrap_options = c("striped", "condensed"), 
+                full_width = T) %>%
+  row_spec(1,background = 'gold') %>%
+  column_spec(2, width='4cm',bold = TRUE, color = "white", background = "red3") 
+```
+
+### MVP Leaders
+```{r}
+# mvp table 
+nwinners = sum(mvp$Points==max(mvp$Points))
+knitr::kable(mvp, align = c("r", "l","l")) %>%
+  kable_styling(bootstrap_options = c("striped", "condensed"), 
+                full_width = T) %>%
+  row_spec(1:nwinners,background = 'gold') %>%
+  column_spec(2, width='4cm',bold = TRUE, color = "white", background = "red3") 
+```
+
+Column {data-width=600} 
+---------------------
+### Team Standings by Day
+```{r}
+# combine results tables for daily results
+
+daily_results <- rbind(standings1,
+                       standings2,
+                       standings3,
+                       standings4) %>%
+  mutate(Rank=factor(rep(1:4,each=nteams),levels=1:4),
+         Team = factor(Team, levels = c('Team Jango',
+                                        'Team Jon',
+                                        'Team Tattoo',
+                                        'Team Chungus',
+                                        'Team Mo',
+                                        'Team Jane',
+                                        'Team Kalag',
+                                        'Team Zest',
+                                        'Team Daav'))) %>%
+  rename(Day=Rank)
+
+# plot daily
+ggplotly(
+  ggplot(daily_results, aes(Day,Points,fill=Team)) +
+    geom_col(position = 'dodge',colour='black') +
+    geom_vline(xintercept = seq(1.5,4.5)) +
+    scale_fill_manual(values = c('#1f613a','#e67e22','#cfad00','#d200d7','#246189','#0000ff','#6400a6','#7f0c49','#0dd18c'))+
+    theme_minimal() +
+    labs(title='Team Standings by Day',y='Cumulative Points') +
+    theme(axis.text.x = element_blank(),
+          panel.background = element_rect(fill = "#edf4ff"),
+          plot.background = element_rect(fill = "#edf4ff")),
+  tooltip = c('fill','y')
+  )
+
+```
+
+### Pool MVPs
+```{r}
+# combine results tables for pool results
+pool_mvp <- mvp %>%
+  left_join(select(day1_results,Player,Team),by='Player') %>%
+  left_join(select(fixNames(data),Player,Pool=Bracket),by='Player') %>%
+  mutate(Team = factor(Team, levels = c('Team Jango',
+                                        'Team Jon',
+                                        'Team Tattoo',
+                                        'Team Chungus',
+                                        'Team Mo',
+                                        'Team Jane',
+                                        'Team Kalag',
+                                        'Team Zest',
+                                        'Team Daav')))
+
+# plot pools
+ggplotly(
+  ggplot(pool_mvp, aes(Team,Points,fill=Team,extra=Player)) +
+    geom_bar(position = 'dodge',stat='identity',colour='black') +
+    scale_fill_manual(values = c('#1f613a','#e67e22','#cfad00','#d200d7','#246189','#0000ff','#6400a6','#7f0c49','#0dd18c')) +
+    facet_wrap(vars(Pool),nrow=2) +
+    theme_minimal() +
+    labs(title='Pool MVPs',y='Total Points',x='Pools') +
+    theme(axis.text.x = element_blank(),
+          panel.background = element_rect(fill = "#edf4ff"),
+          plot.background = element_rect(fill = "#edf4ff")),
+  tooltip='extra'
+)
+```
+
+
+
+
+
+
+
 
 
 

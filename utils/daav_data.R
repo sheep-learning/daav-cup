@@ -20,7 +20,7 @@ npools = nrow(teams)
 
 # Read and wrangle data
 data <- read_csv('data/daavdata.csv') %>%
-  rename(Name = `What name do you go by in the discord?`,
+  rename(Player = `What name do you go by in the discord?`,
          League = `What is the Highest league you have reached?`) %>%
   select(-c(1,3)) %>%
   filter(Bracket != '') %>%
@@ -28,7 +28,7 @@ data <- read_csv('data/daavdata.csv') %>%
                 ~ case_match(., 
                              "Don't have/cannot upgrade" ~ "NULL",
                              .default = .))) %>%
-  mutate(Team = case_match(Name, 
+  mutate(Team = case_match(Player, 
                            teams$`Team Jango`     ~ 1,
                            teams$`Team Jon`       ~ 2,
                            teams$`Team Tattoo`    ~ 3,
@@ -39,16 +39,16 @@ data <- read_csv('data/daavdata.csv') %>%
                            teams$`Team Zest`      ~ 8,
                            teams$`Team Daav`      ~ 9
   ),
-  Colour = case_match(Name, 
-                      teams$`Team Jango`     ~ 'lightgreen',
-                      teams$`Team Jon`       ~ 'orange',
-                      teams$`Team Tattoo`    ~ 'magenta',
-                      teams$`Team Chungus`   ~ 'gold',
-                      teams$`Team Mo`        ~ 'skyblue',
-                      teams$`Team Jane`      ~ 'red3',
-                      teams$`Team Kalaginho` ~ 'royalblue',
-                      teams$`Team Zest`      ~ 'forestgreen',
-                      teams$`Team Daav`      ~ 'darkgrey'
+  Colour = case_match(Player, 
+                      teams$`Team Jango`     ~ '#1f613a',
+                      teams$`Team Jon`       ~ '#e67e22',
+                      teams$`Team Tattoo`    ~ '#cfad00',
+                      teams$`Team Chungus`   ~ '#d200d7',
+                      teams$`Team Mo`        ~ '#246189',
+                      teams$`Team Jane`      ~ '#0000ff',
+                      teams$`Team Kalaginho` ~ '#6400a6',
+                      teams$`Team Zest`      ~ '#7f0c49',
+                      teams$`Team Daav`      ~ '#0dd18c'
   ), .after = 1) %>%
   arrange(Bracket, Team)
 

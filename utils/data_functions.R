@@ -64,6 +64,15 @@ getResults <- function(data, team, npools){
     return()
 }
 
+column_colours <- function(col) {
+  sapply(col, function(x) {
+    if (grepl("\\(1st\\)", x)) "gold"
+    else if (grepl("\\(2nd\\)", x)) "silver"
+    else if (grepl("\\(3rd\\)", x)) "#cd7f32"
+    else "white"
+  })
+}
+
 getPositions = function(df){
   df %>%
     mutate(Position = case_match(Points,
@@ -74,7 +83,7 @@ getPositions = function(df){
            Points = rep(1:npools,nteams)) %>%
     unite('Player', Position, Player, sep=' ') %>%
     pivot_wider(names_from = Team, values_from = Player) %>%
-    select(-Points)
+    select(-Points) 
 }
 
 getSummary <- function(df){
@@ -102,7 +111,7 @@ getMVP <- function(mvp, results_df){
 }
 
 # function for shortening/splitting certain names
-cutNames <- function(df){
+fixNames <- function(df){
   mutate(df, Player = case_match(Player,
                                  'JonReremy' ~ 'Jon',
                                  'Skanderberg' ~  'Skander',
@@ -111,10 +120,13 @@ cutNames <- function(df){
                                  'Swagzilla' ~ 'Swagz',
                                  'Partly_Sunny' ~ 'Partly Sunny',
                                  'Bangstarserve' ~ 'Bangstar',
+                                 'bangstarserve' ~ 'Bangstar',
                                  'Kalaginho' ~ 'Kalag',
                                  'Kalaghino' ~ 'Kalag',
                                  'AhsokaBee' ~ 'Ahsoka Bee',
                                  'Cassiopea' ~ 'Cassio',
+                                 'Yutaah' ~ 'Yutaaah',
+                                 'snpnirav' ~ 'Snpnirav',
                                  .default = Player),
          Player = case_when(
            nchar(Player) <= 3 ~ str_pad(Player,
@@ -124,4 +136,5 @@ cutNames <- function(df){
            .default = Player))
 }
 
-save.image(file='utils/functions/functions.RData')
+
+save.image(file='utils/functions/data_functions.RData')

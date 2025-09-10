@@ -17,32 +17,37 @@ showCars <- function(carpicks,bracket){
 showResults <- function(df){
   knitr::kable(df, align = c("r", "l")) %>%
     kable_styling(bootstrap_options = c("striped", "condensed"), 
-                  full_width = F) %>%
+                  full_width = T) %>%
     column_spec(2, width='3cm',  bold = TRUE, color = "white", background = "red3")
 }
 
 indivResults <- function(carpicks, positions, bracket){
-  tibble(Car  = carpicks) %>%
-    cbind(positions[,bracket]) %>%
-    kable() %>%
+  df <- tibble(Car = carpicks) %>%
+    bind_cols(positions[,bracket]) 
+  
+  tab <- df %>%
+    kable(escape='FALSE',format='html') %>%
     kable_styling(
       bootstrap_options = c("striped", "condensed"),
-      full_width = FALSE,
+      full_width = T,
       position = "left"
     ) %>%
     column_spec(
-      1, width = "100px", bold = TRUE, color = "white", background = "red3"
-    ) %>%
-    column_spec(
-      2:4,
-      width = "50px",
-    )
+      1, width="100px", bold = TRUE, color = "white", background = "red3"
+      ) 
+    
+  for(i in 2:ncol(df)){
+    tab <- tab %>% 
+      column_spec(i, width="50px", background = column_colours(df[[i]]))
+  }
+  
+  return(tab)
 }
 
 dailyResults <- function(df){
   knitr::kable(df, align = c("r", "l")) %>%
     kable_styling(bootstrap_options = c("striped", "condensed"), 
-                  full_width = F) %>%
+                  full_width = T) %>%
     column_spec(2, width='3cm',  bold = TRUE, color = "white", background = "red3")
 }
 
