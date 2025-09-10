@@ -171,19 +171,63 @@ indivResults(cars_df$day3_bot, positions, bot)
 ```
 
 
+# Day 4 - River Peak
+
+```{r}
+top <- c(8,1,6)
+mid <- c(2,4,9)
+bot <- c(7,5,3)
+```
+
+```{r}
+# read in points per team
+day4_raw <- read_csv('data/daav_cup_results - Day4.csv') 
+  
+day4_results <- map_dfr(1:nteams, ~getResults(day4_raw, .x, npools)) %>%
+  cutNames()
+  
+day4_summary <- getSummary(day4_results) 
+
+standings4 <- getStandings(day4_summary, standings3)
+
+mvp <- getMVP(mvp, day4_results)
+
+positions <- getPositions(day4_results)
+```
+
+Column {data-width=250}
+--------------
+### Top Bracket
+```{r}
+indivResults(cars_df$day4_top, positions, top)
+```
+Column {data-width=250}
+--------------
+### Middle Bracket
+```{r}
+indivResults(cars_df$day4_mid, positions, mid)
+```
+Column {data-width=250}
+--------------
+### Bottom Bracket
+```{r}
+indivResults(cars_df$day4_bot, positions, bot)
+```
+
+
 # Standings
 
 Column {data-width=125}
 --------------
-### Day 3 Results
+### Day 4 Results
 ```{r}
-dailyResults(day3_summary)
+dailyResults(day4_summary)
 ```
 Column {data-width=125}
 --------------
 ### Overall Standings
 ```{r}
-dailyResults(standings3)
+dailyResults(standings4)
 ```
 Column {data-width=125}
 --------------
@@ -191,8 +235,6 @@ Column {data-width=125}
 ```{r}
 dailyResults(mvp)
 ```
-
-
 
 
 

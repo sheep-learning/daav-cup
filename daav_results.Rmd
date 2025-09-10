@@ -92,7 +92,7 @@ showResults(standings3)
 
 # Day 4 - River Peak
 
-```{r, eval=FALSE}
+```{r}
 day4_raw <- read_csv('data/daav_cup_results - Day4.csv') 
   
 day4_results <- map_dfr(1:nteams, ~getResults(day4_raw, .x, npools)) %>%
@@ -106,10 +106,10 @@ mvp <- getMVP(mvp, day4_results)
 ```
 
 ### Day 4 Standings
-```{r, eval=FALSE}
+```{r}
 showResults(day4_summary)
 ```
-```{r, eval=FALSE}
+```{r}
 showResults(standings4)
 ```
 
