@@ -361,7 +361,7 @@ ggplotly(
     theme(axis.text.x = element_blank(),
           panel.background = element_rect(fill = "#edf4ff"),
           plot.background = element_rect(fill = "#edf4ff")),
-  tooltip='extra'
+  tooltip=c('extra','y')
 )
 ```
 
