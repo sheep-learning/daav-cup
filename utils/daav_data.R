@@ -52,4 +52,4 @@ data <- read_csv('data/daavdata.csv') %>%
   ), .after = 1) %>%
   arrange(Bracket, Team)
 
-save.image('team_data.RData')
+save.image('utils/vars/team_data.RData')

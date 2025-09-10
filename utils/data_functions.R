@@ -124,4 +124,4 @@ cutNames <- function(df){
            .default = Player))
 }
 
-save.image(file='functions.RData')
+save.image(file='utils/functions/functions.RData')

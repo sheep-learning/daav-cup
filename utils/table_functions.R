@@ -46,4 +46,4 @@ dailyResults <- function(df){
     column_spec(2, width='3cm',  bold = TRUE, color = "white", background = "red3")
 }
 
-save.image(file='table_functions.RData')
+save.image(file='utils/functions/table_functions.RData')

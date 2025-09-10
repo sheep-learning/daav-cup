@@ -28,10 +28,10 @@ library(flexdashboard)
 library(RColorBrewer)
 library(plotly)
 library(kableExtra)
-load('utils/functions.RData')
-load('utils/table_functions.RData')
-load('utils/team_data.RData')
-load('utils/cars_df.RData')
+load('utils/functions/data_functions.RData')
+load('utils/functions/table_functions.RData')
+load('utils/vars/team_data.RData')
+load('utils/vars/cars_df.RData')
 ```
 
 # Day 1 - Oasis
@@ -215,19 +215,62 @@ indivResults(cars_df$day4_bot, positions, bot)
 ```
 
 
+# Day 5 - Hairpin
+
+```{r}
+top <- c(8,1,9)
+mid <- c(6,2,7)
+bot <- c(5,4,3)
+```
+
+```{r}
+# read in points per team
+day5_raw <- read_csv('data/daav_cup_results - Day5.csv') 
+  
+day5_results <- map_dfr(1:nteams, ~getResults(day5_raw, .x, npools)) %>%
+  cutNames()
+  
+day5_summary <- getSummary(day5_results) 
+
+standings5 <- getStandings(day5_summary, standings4)
+
+mvp <- getMVP(mvp, day5_results)
+
+positions <- getPositions(day5_results)
+```
+
+Column {data-width=250}
+--------------
+### Top Bracket
+```{r}
+indivResults(cars_df$day5_top, positions, top)
+```
+Column {data-width=250}
+--------------
+### Middle Bracket
+```{r}
+indivResults(cars_df$day5_mid, positions, mid)
+```
+Column {data-width=250}
+--------------
+### Bottom Bracket
+```{r}
+indivResults(cars_df$day5_bot, positions, bot)
+```
+
 # Standings
 
 Column {data-width=125}
 --------------
-### Day 4 Results
+### Day 5 Results
 ```{r}
-dailyResults(day4_summary)
+dailyResults(day5_summary)
 ```
 Column {data-width=125}
 --------------
 ### Overall Standings
 ```{r}
-dailyResults(standings4)
+dailyResults(standings5)
 ```
 Column {data-width=125}
 --------------
