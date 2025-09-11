@@ -269,23 +269,80 @@ dailyResults(mvp)
 ```
 
 
+# Day 5 - River Peak
 
-# Overview
+```{r}
+top <- c(8,1,9)
+mid <- c(6,2,7)
+bot <- c(5,4,3)
+```
+
+```{r}
+# read in points per team
+day5_raw <- read_csv('data/daav_cup_results - Day5.csv') 
+  
+day5_results <- map_dfr(1:nteams, ~getResults(day5_raw, .x, npools)) %>%
+  fixNames()
+  
+day5_summary <- getSummary(day5_results) 
+
+standings5 <- getStandings(day5_summary, standings4)
+
+mvp <- getMVP(mvp, day5_results)
+
+positions <- getPositions(day5_results)
+```
+
+Column {data-width=450}
+--------------
+### Top Bracket
+```{r}
+indivResults(cars_df$day5_top, positions, top)
+```
+### Middle Bracket
+```{r}
+indivResults(cars_df$day5_mid, positions, mid)
+```
+### Bottom Bracket
+```{r}
+indivResults(cars_df$day5_bot, positions, bot)
+```
+
+Column {data-width=125}
+--------------
+### Day 5 Standings
+```{r}
+dailyResults(day5_summary)
+```
+### Overall Standings
+```{r}
+dailyResults(standings5)
+```
+Column {data-width=125}
+--------------
+### MVP Standings
+```{r}
+dailyResults(mvp)
+```
+
+
+
+# Final Standings
 
 Column {data-width=300} 
 ---------------------
 
-### Tournament Leaders
+### Tournament Winners
 ```{r}
 # mvp table 
-knitr::kable(standings4, align = c("r", "l","l")) %>%
+knitr::kable(standings5, align = c("r", "l","l")) %>%
   kable_styling(bootstrap_options = c("striped", "condensed"), 
                 full_width = T) %>%
   row_spec(1,background = 'gold') %>%
   column_spec(2, width='4cm',bold = TRUE, color = "white", background = "red3") 
 ```
 
-### MVP Leaders
+### MVPs
 ```{r}
 # mvp table 
 nwinners = sum(mvp$Points==max(mvp$Points))
@@ -305,8 +362,9 @@ Column {data-width=600}
 daily_results <- rbind(standings1,
                        standings2,
                        standings3,
-                       standings4) %>%
-  mutate(Rank=factor(rep(1:4,each=nteams),levels=1:4),
+                       standings4,
+                       standings5) %>%
+  mutate(Rank=factor(rep(1:5,each=nteams),levels=1:5),
          Team = factor(Team, levels = c('Team Jango',
                                         'Team Jon',
                                         'Team Tattoo',
@@ -322,7 +380,7 @@ daily_results <- rbind(standings1,
 ggplotly(
   ggplot(daily_results, aes(Day,Points,fill=Team)) +
     geom_col(position = 'dodge',colour='black') +
-    geom_vline(xintercept = seq(1.5,4.5)) +
+    geom_vline(xintercept = seq(1.5,5.5)) +
     scale_fill_manual(values = c('#1f613a','#e67e22','#cfad00','#d200d7','#246189','#0000ff','#6400a6','#7f0c49','#0dd18c'))+
     theme_minimal() +
     labs(title='Team Standings by Day',y='Cumulative Points') +
