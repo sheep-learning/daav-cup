@@ -102,10 +102,17 @@ getStandings <- function(summary_df, standings){
     mutate(Rank = 1:nteams, .before=1)
 }
 
+
+yeetVelox <- function(df){
+  mutate(df, Points = case_when(Player == 'Velox' ~ NA,
+                                .default = Points)) 
+}
+
 getMVP <- function(mvp, results_df){
   inner_join(mvp,results_df,by='Player') %>%
     mutate(Points = Points.x + Points.y) %>%
     select(-Points.x,-Points.y,-Team) %>%
+    yeetVelox() %>%
     arrange(desc(Points)) %>%
     mutate(Rank = 1:(nteams*npools), .before=1)
 }

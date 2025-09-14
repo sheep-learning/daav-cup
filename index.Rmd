@@ -57,8 +57,9 @@ standings1 <- arrange(day1_summary,Team) %>%
   mutate(Rank = 1:nteams, .before=1)
 
 mvp <- day1_results %>%
+  yeetVelox() %>%
   arrange(desc(Points)) %>%
-  mutate(Rank = 1:(nteams*npools), Team = NULL, .before=1)
+  mutate(Rank = 1:(nteams*npools), Team = NULL, .before=1) 
 
 positions <- getPositions(day1_results)
 ```
@@ -116,7 +117,7 @@ day2_summary <- getSummary(day2_results)
 
 standings2 <- getStandings(day2_summary, standings1)
 
-mvp <- getMVP(mvp, day2_results)
+mvp <- getMVP(mvp, day2_results) 
 
 positions <- getPositions(day2_results)
 ```
@@ -173,7 +174,8 @@ day3_summary <- getSummary(day3_results)
 
 standings3 <- getStandings(day3_summary, standings2)
 
-mvp <- getMVP(mvp, day3_results)
+mvp <- getMVP(mvp, day3_results) %>%
+  yeetVelox()
 
 positions <- getPositions(day3_results)
 ```
@@ -231,7 +233,8 @@ day4_summary <- getSummary(day4_results)
 
 standings4 <- getStandings(day4_summary, standings3)
 
-mvp <- getMVP(mvp, day4_results)
+mvp <- getMVP(mvp, day4_results) %>%
+  yeetVelox()
 
 positions <- getPositions(day4_results)
 ```
@@ -288,7 +291,8 @@ day5_summary <- getSummary(day5_results)
 
 standings5 <- getStandings(day5_summary, standings4)
 
-mvp <- getMVP(mvp, day5_results)
+mvp <- getMVP(mvp, day5_results) %>%
+  yeetVelox()
 
 positions <- getPositions(day5_results)
 ```
@@ -345,7 +349,7 @@ knitr::kable(standings5, align = c("r", "l","l")) %>%
 ### MVPs
 ```{r}
 # mvp table 
-nwinners = sum(mvp$Points==max(mvp$Points))
+nwinners = sum(mvp$Points==max(mvp$Points, na.rm=T), na.rm=T)
 knitr::kable(mvp, align = c("r", "l","l")) %>%
   kable_styling(bootstrap_options = c("striped", "condensed"), 
                 full_width = T) %>%

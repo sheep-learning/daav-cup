@@ -108,29 +108,29 @@ cars_df <- tibble::tibble(
   ###############################################
   
   # Day 5
-  day5_top = c('SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum'),
+  day5_top = c('SSS Conqueror',
+               'SSS Hornet',
+               'SSS Maverick',
+               'SS Comet',
+               'SS Fang',
+               'SS Leap',
+               'SS Tofu'),
   
-  day5_mid = c('SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum'),
+  day5_mid = c('SSS Samurai',
+               'SSS Glamour',
+               'SSS Quantum',
+               'SSS Minni',
+               'SSS Glamour',
+               'SS Flower',
+               'S Kobra'),
   
-  day5_bot = c('SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum',
-               'SSS ur mum')
+  day5_bot = c('SSS Glamour',
+               'SSS Bandit',
+               'SSS Mamba',
+               'SSS Thor',
+               'SSS Bison',
+               'SS Taxi',
+               'SS Minni')
 )
   
 save(cars_df, file="utils/vars/cars_df.RData")
